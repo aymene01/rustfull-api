@@ -1096,7 +1096,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "tokio",
- "uuid 0.8.2",
+ "uuid",
 ]
 
 [[package]]
@@ -1389,7 +1389,7 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
- "uuid 1.5.0",
+ "uuid",
  "webpki-roots",
 ]
 
@@ -1472,7 +1472,7 @@ dependencies = [
  "stringprep",
  "thiserror",
  "tracing",
- "uuid 1.5.0",
+ "uuid",
  "whoami",
 ]
 
@@ -1513,7 +1513,7 @@ dependencies = [
  "stringprep",
  "thiserror",
  "tracing",
- "uuid 1.5.0",
+ "uuid",
  "whoami",
 ]
 
@@ -1538,7 +1538,7 @@ dependencies = [
  "sqlx-core",
  "tracing",
  "url",
- "uuid 1.5.0",
+ "uuid",
 ]
 
 [[package]]
@@ -1799,19 +1799,13 @@ dependencies = [
 
 [[package]]
 name = "uuid"
-version = "0.8.2"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
+checksum = "88ad59a7560b41a70d191093a945f0b87bc1deeda46fb237479708a1d6b6cdfc"
 dependencies = [
  "getrandom",
  "serde",
 ]
-
-[[package]]
-name = "uuid"
-version = "1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88ad59a7560b41a70d191093a945f0b87bc1deeda46fb237479708a1d6b6cdfc"
 
 [[package]]
 name = "vcpkg"

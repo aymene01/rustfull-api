@@ -80,7 +80,7 @@ pub async fn update_quote(
     extract::Path(id): extract::Path<String>,
     extract::State(pool): extract::State<PgPool>,
     axum::Json(payload): axum::Json<CreateQuote>,
-) -> Result<http::StatusCode, http::StatusCode> {
+) -> http::StatusCode {
     println!("{:?}", payload);
 
     let now = Utc::now();
@@ -104,8 +104,31 @@ pub async fn update_quote(
     });
 
     match res {
-        Ok(status) => Ok(status),
-        Err(_) => Err(http::StatusCode::INTERNAL_SERVER_ERROR),
+        Ok(status) => status,
+        Err(_) => http::StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
 
+pub async fn delete_quote(
+    extract::Path(id): extract::Path<String>,
+    extract::State(pool): extract::State<PgPool>,
+) -> http::StatusCode {
+    let res = sqlx::query(
+        r#"
+        DELETE FROM quotes
+        WHERE id = $1
+        "#,
+    )
+    .bind(id)
+    .execute(&pool)
+    .await
+    .map(|res| match res.rows_affected() {
+        0 => http::StatusCode::NOT_FOUND,
+        _ => http::StatusCode::OK,
+    });
+
+    match res {
+        Ok(status) => status,
+        Err(_) => http::StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}

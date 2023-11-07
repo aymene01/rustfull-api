@@ -1,4 +1,4 @@
-mod handler;
+mod handlers;
 use axum::routing::{get, Router, post, put};
 use std::env;
 use sqlx::postgres::PgPoolOptions;
@@ -15,10 +15,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     let app = Router::new()
-        .route("/", get(handler::health))
-        .route("/quotes", post(handler::create_quote))
-        .route("/quotes", get(handler::read_quotes))
-        .route("/quotes/:id", put(handler::update_quote))
+        .route("/", get(handlers::health))
+        .route("/quotes", post(handlers::create_quote))
+        .route("/quotes", get(handlers::read_quotes))
+        .route("/quotes/:id", put(handlers::update_quote))
         .with_state(pool);
 
     axum::Server::bind(&addr.parse().unwrap())

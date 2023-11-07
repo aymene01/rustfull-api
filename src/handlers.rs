@@ -94,16 +94,13 @@ pub async fn update_quote(
     )
     .bind(&payload.author)
     .bind(&payload.quote)
-    .bind(&now)  // Change here: bind `now` as a reference
-    .bind(&id)   // Change here: bind `id` as a reference
+    .bind(now)  
+    .bind(id)  
     .execute(&pool)
     .await
-    .map(|res| {
-        if res.rows_affected() == 0 {
-            http::StatusCode::NOT_FOUND
-        } else {
-            http::StatusCode::OK
-        }
+    .map(|res| match res.rows_affected() {
+        0 => http::StatusCode::NOT_FOUND,
+        _ => http::StatusCode::OK,
     });
 
     match res {

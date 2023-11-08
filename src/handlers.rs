@@ -37,9 +37,9 @@ pub async fn health() -> http::StatusCode {
 
 pub async fn create_quote(extract::State(pool): extract::State<PgPool>, axum::Json(payload): axum::Json<CreateQuote>) -> Result<(http::StatusCode, axum::Json<Quote>), http::StatusCode> {
     println!("{:?}", payload);
-    let quote = Quote::new(payload.author.clone(), payload.quote.clone());
+    let quote: Quote = Quote::new(payload.author.clone(), payload.quote.clone());
 
-    let res = sqlx::query(
+    let res: Result<sqlx::postgres::PgQueryResult, sqlx::Error> = sqlx::query(
         r#"
         INSERT INTO quotes (id, author, quote, inserted_at, updated_at)
         VALUES ($1, $2, $3, $4, $5)
@@ -62,7 +62,7 @@ pub async fn create_quote(extract::State(pool): extract::State<PgPool>, axum::Js
 pub async fn read_quotes(
     extract::State(pool): extract::State<PgPool>,
 ) -> Result<axum::Json<Vec<Quote>>, http::StatusCode> {
-    let res = sqlx::query_as::<_, Quote>(
+    let res: Result<Vec<Quote>, sqlx::Error> = sqlx::query_as::<_, Quote>(
         r#"
         SELECT * FROM quotes
         "#,
@@ -83,9 +83,9 @@ pub async fn update_quote(
 ) -> http::StatusCode {
     println!("{:?}", payload);
 
-    let now = Utc::now();
+    let now: chrono::DateTime<Utc> = Utc::now();
 
-    let res = sqlx::query(
+    let res: Result<http::StatusCode, sqlx::Error> = sqlx::query(
         r#"
         UPDATE quotes
         SET author = $1, quote = $2, updated_at = $3
@@ -113,7 +113,7 @@ pub async fn delete_quote(
     extract::Path(id): extract::Path<String>,
     extract::State(pool): extract::State<PgPool>,
 ) -> http::StatusCode {
-    let res = sqlx::query(
+    let res: Result<http::StatusCode, sqlx::Error> = sqlx::query(
         r#"
         DELETE FROM quotes
         WHERE id = $1

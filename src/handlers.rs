@@ -14,7 +14,7 @@ pub struct Quote {
 
 impl Quote {
     pub fn new(author: String, quote: String) -> Self {
-        let now = Utc::now();
+        let now: chrono::DateTime<Utc> = Utc::now();
         Self {
             id: uuid::Uuid::new_v4(),
             author,
@@ -77,8 +77,8 @@ pub async fn read_quotes(
 }
 
 pub async fn update_quote(
-    extract::Path(id): extract::Path<String>,
     extract::State(pool): extract::State<PgPool>,
+    extract::Path(id): extract::Path<uuid::Uuid>,
     axum::Json(payload): axum::Json<CreateQuote>,
 ) -> http::StatusCode {
     println!("{:?}", payload);
@@ -110,9 +110,10 @@ pub async fn update_quote(
 }
 
 pub async fn delete_quote(
-    extract::Path(id): extract::Path<String>,
     extract::State(pool): extract::State<PgPool>,
+    extract::Path(id): extract::Path<uuid::Uuid>,
 ) -> http::StatusCode {
+
     let res: Result<http::StatusCode, sqlx::Error> = sqlx::query(
         r#"
         DELETE FROM quotes
@@ -126,6 +127,7 @@ pub async fn delete_quote(
         0 => http::StatusCode::NOT_FOUND,
         _ => http::StatusCode::OK,
     });
+    println!("{:?}", res);
 
     match res {
         Ok(status) => status,
